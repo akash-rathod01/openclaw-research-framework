@@ -2,8 +2,9 @@
 
 **Multi-Agent Web Scraping & Research Tool with FREE AI Summarization**
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.13+](https://img.shields.io/badge/python-3.13+-blue.svg)](https://www.python.org/downloads/)
 [![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)]()
-[![Python](https://img.shields.io/badge/Python-3.13.4-blue)]()
 [![AI](https://img.shields.io/badge/AI-FREE%20(Hugging%20Face)-purple)]()
 [![Tier](https://img.shields.io/badge/Tier-1%20Enhanced-orange)]()
 
