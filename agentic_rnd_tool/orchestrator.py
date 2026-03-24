@@ -6,6 +6,7 @@ Main coordination system for multi-agent research and security framework
 import json
 import yaml
 import sys
+import argparse
 from pathlib import Path
 from typing import Dict, List, Optional, Any
 from datetime import datetime
@@ -373,19 +374,102 @@ class AgentOrchestrator:
 
 
 def main():
-    """CLI interface for the orchestrator"""
+    """CLI interface for the orchestrator with Tier 1 enhancements"""
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(
+        description='Agentic RnD Tool - Multi-agent research and security framework (Tier 1 Enhanced)',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Basic usage (backwards compatible)
+  python orchestrator.py "https://www.nasa.gov"
+  
+  # Tier 1: JavaScript rendering for React/Vue/Angular apps
+  python orchestrator.py "https://spa-app.com" --javascript
+  
+  # Tier 1: Deep crawling (5 levels, 1000 pages)
+  python orchestrator.py "https://www.nasa.gov" --depth 5 --max-sources 500
+  
+  # Tier 1: Disable structured data extraction
+  python orchestrator.py "https://example.com" --no-structured
+  
+  # Tier 1: All features combined
+  python orchestrator.py "https://example.com" --javascript --depth 5 --max-sources 1000
+"""
+    )
+    
+    parser.add_argument('task', nargs='+', help='Research task or URL to scrape')
+    
+    # Tier 1 enhancements
+    parser.add_argument('-j', '--javascript', action='store_true',
+                      help='Enable JavaScript rendering (Selenium) for modern SPAs')
+    parser.add_argument('-d', '--depth', type=int, choices=range(1, 6), metavar='DEPTH',
+                      help='Crawl depth (1-5), default: 2')
+    parser.add_argument('-m', '--max-sources', type=int, metavar='NUM',
+                      help='Maximum sources to scrape (default: 50, max: 1000)')
+    parser.add_argument('--no-structured', action='store_true',
+                      help='Disable structured data extraction (JSON-LD, Schema.org)')
+    parser.add_argument('--domain-filter', action='store_true', default=True,
+                      help='Stay within same domain (default: True)')
+    
+    # Check for backwards compatibility (simple usage without flags)
     if len(sys.argv) < 2:
-        console.print("[yellow]Usage:[/yellow] python orchestrator.py <task>")
-        console.print("[cyan]Example:[/cyan] python orchestrator.py 'https://en.wikipedia.org/wiki/AI'")
+        parser.print_help()
+        console.print("\n[yellow]💡 Tip:[/yellow] Try: python orchestrator.py \"https://www.nasa.gov\"")
         return
     
-    task = ' '.join(sys.argv[1:])
+    # Handle backwards compatibility - if first arg doesn't start with -, parse old way
+    if not any(arg.startswith('-') for arg in sys.argv[1:]):
+        # Legacy mode: all args are the task
+        task = ' '.join(sys.argv[1:])
+        args = argparse.Namespace(
+            task=[task], 
+            javascript=False, 
+            depth=None, 
+            max_sources=None,
+            no_structured=False,
+            domain_filter=True
+        )
+    else:
+        # New mode: parse arguments properly
+        args = parser.parse_args()
     
-    # Initialize orchestrator
+    task = ' '.join(args.task)
+    
+    # Display Tier 1 features if enabled
+    if args.javascript or args.depth or args.max_sources or args.no_structured:
+        feature_panel = []
+        if args.javascript:
+            feature_panel.append("[cyan]🌐 JavaScript Rendering:[/cyan] Enabled (Selenium)")
+        if args.depth:
+            feature_panel.append(f"[cyan]🔗 Crawl Depth:[/cyan] {args.depth} levels")
+        if args.max_sources:
+            feature_panel.append(f"[cyan]📊 Max Sources:[/cyan] {args.max_sources}")
+        if args.no_structured:
+            feature_panel.append("[yellow]⚠️  Structured Data:[/yellow] Disabled")
+        else:
+            feature_panel.append("[green]✨ Structured Data:[/green] Enabled (JSON-LD, Schema.org)")
+        
+        console.print(Panel(
+            '\n'.join(feature_panel),
+            title="🚀 Tier 1 Features Active",
+            border_style="green"
+        ))
+    
+    # Initialize orchestrator with Tier 1 config
     orchestrator = AgentOrchestrator()
     
-    # Execute task
-    result = orchestrator.execute(task)
+    # Pass Tier 1 parameters to executor
+    tier1_config = {
+        'use_javascript': args.javascript,
+        'depth': args.depth,
+        'max_sources': args.max_sources,
+        'extract_structured': not args.no_structured,
+        'domain_filter': args.domain_filter
+    }
+    
+    # Execute task with Tier 1 enhancements
+    result = orchestrator.execute(task, **tier1_config)
     
     # Generate reports
     from report_generator import ReportGenerator
@@ -411,8 +495,11 @@ def main():
     console.print(f"\n[bold cyan]🚀 Opening dashboard in browser...[/bold cyan]")
     webbrowser.open(f'file:///{html_path}')
     
-    # Success message
-    console.print("\n[bold green]✨ All reports generated successfully![/bold green]")
+    # Success message with Tier 1 indicator
+    if any([args.javascript, args.depth, args.max_sources]):
+        console.print("\n[bold green]✨ Tier 1 Enhanced Scraping Complete![/bold green]")
+    else:
+        console.print("\n[bold green]✨ All reports generated successfully![/bold green]")
 
 
 if __name__ == "__main__":
