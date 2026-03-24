@@ -1,0 +1,43 @@
+# Python Dependencies for Agentic RnD Tool
+# Install with: pip install -r requirements.txt
+
+# Core dependencies
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+lxml>=4.9.0
+
+# Web scraping with JavaScript support
+selenium>=4.15.0
+webdriver-manager>=4.0.0
+
+# Security scanning
+python-owasp-zap-v2.4>=0.0.21
+
+# Data processing
+pandas>=2.1.0
+
+# Async support
+aiohttp>=3.9.0
+
+# HTML parsing alternatives
+html5lib>=1.1
+
+# TypeScript/Node.js bridge (optional)
+# For running Python from Node.js processes
+
+# Development dependencies (optional)
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+black>=23.0.0
+flake8>=6.0.0
+mypy>=1.5.0
+
+# Logging and monitoring
+colorlog>=6.7.0
+
+# Rich console output
+rich>=13.7.0
+
+# Configuration
+pyyaml>=6.0.0
+python-dotenv>=1.0.0
