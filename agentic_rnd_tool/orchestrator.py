@@ -150,6 +150,50 @@ class AgentOrchestrator:
                 progress.update(task_progress, completed=True)
                 console.print(f"[green]✓ {agent_config['name']} completed[/green]")
         
+        # AI Summarization (if enabled)
+        if kwargs.get('enable_summarization', False):
+            console.print("\n[magenta]🤖 AI Summarization enabled - processing results...[/magenta]")
+            
+            # Check if web_research produced results
+            if 'web_research' in results['results']:
+                web_data = results['results']['web_research']
+                sources = web_data.get('content', [])
+                
+                if sources:
+                    try:
+                        # Import and run AI summarization agent
+                        sys.path.insert(0, str(self.base_path / 'skills' / 'ai_summarization'))
+                        from summarizer import research as ai_summarize
+                        
+                        summary_result = ai_summarize(
+                            task,
+                            sources=sources,
+                            max_length=kwargs.get('summary_length', 150),
+                            min_length=50
+                        )
+                        
+                        if summary_result.get('success'):
+                            # Update web_research results with summarized sources
+                            results['results']['web_research']['content'] = summary_result['sources']
+                            results['results']['web_research']['ai_summarized'] = True
+                            results['results']['web_research']['summarization_stats'] = {
+                                'total_sources': summary_result['total_sources'],
+                                'summarized_count': summary_result['summarized_count'],
+                                'model': summary_result['model']
+                            }
+                            results['agents_used'].append('AI Summarization')
+                            
+                        else:
+                            console.print(f"[yellow]⚠️  AI summarization failed: {summary_result.get('error')}[/yellow]")
+                            
+                    except ImportError as e:
+                        console.print(f"[red]❌ AI Summarization not installed: {e}[/red]")
+                        console.print("[yellow]💡 Install with: pip install transformers torch[/yellow]")
+                    except Exception as e:
+                        console.print(f"[yellow]⚠️  AI Summarization error: {e}[/yellow]")
+                else:
+                    console.print("[dim]No sources to summarize[/dim]")
+        
         # Synthesize results
         final_result = self._synthesize_results(results)
         
@@ -412,6 +456,12 @@ Examples:
     parser.add_argument('--domain-filter', action='store_true', default=True,
                       help='Stay within same domain (default: True)')
     
+    # AI Summarization (FREE feature)
+    parser.add_argument('-s', '--summarize', action='store_true',
+                      help='Enable AI summarization (FREE - uses Hugging Face transformers)')
+    parser.add_argument('--summary-length', type=int, default=150, metavar='LENGTH',
+                      help='Max summary length in words (default: 150)')
+    
     # Check for backwards compatibility (simple usage without flags)
     if len(sys.argv) < 2:
         parser.print_help()
@@ -428,7 +478,9 @@ Examples:
             depth=None, 
             max_sources=None,
             no_structured=False,
-            domain_filter=True
+            domain_filter=True,
+            summarize=False,
+            summary_length=150
         )
     else:
         # New mode: parse arguments properly
@@ -437,7 +489,7 @@ Examples:
     task = ' '.join(args.task)
     
     # Display Tier 1 features if enabled
-    if args.javascript or args.depth or args.max_sources or args.no_structured:
+    if args.javascript or args.depth or args.max_sources or args.no_structured or args.summarize:
         feature_panel = []
         if args.javascript:
             feature_panel.append("[cyan]🌐 JavaScript Rendering:[/cyan] Enabled (Selenium)")
@@ -449,10 +501,12 @@ Examples:
             feature_panel.append("[yellow]⚠️  Structured Data:[/yellow] Disabled")
         else:
             feature_panel.append("[green]✨ Structured Data:[/green] Enabled (JSON-LD, Schema.org)")
+        if args.summarize:
+            feature_panel.append(f"[magenta]🤖 AI Summarization:[/magenta] Enabled (max {args.summary_length} words, FREE)")
         
         console.print(Panel(
             '\n'.join(feature_panel),
-            title="🚀 Tier 1 Features Active",
+            title="🚀 Enhanced Features Active",
             border_style="green"
         ))
     
@@ -465,7 +519,9 @@ Examples:
         'depth': args.depth,
         'max_sources': args.max_sources,
         'extract_structured': not args.no_structured,
-        'domain_filter': args.domain_filter
+        'domain_filter': args.domain_filter,
+        'enable_summarization': args.summarize,
+        'summary_length': args.summary_length
     }
     
     # Execute task with Tier 1 enhancements

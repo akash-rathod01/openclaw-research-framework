@@ -130,11 +130,19 @@ class ReportGenerator:
                 title = item.get('title', 'Untitled')
                 url = item.get('url', '')
                 content_size = len(item.get('content', ''))
+                summary = item.get('summary', '')
+                is_summarized = item.get('summarized', False)
                 
                 md += f"{i}. **{title}**\n"
                 md += f"   - URL: {url}\n"
                 md += f"   - Content Size: {content_size} chars\n"
-                md += f"   - Status: {item.get('status_code', 'N/A')}\n\n"
+                md += f"   - Status: {item.get('status_code', 'N/A')}\n"
+                
+                # Add AI summary if available
+                if summary and is_summarized:
+                    md += f"   - **🤖 AI Summary:** {summary}\n"
+                
+                md += "\n"
             
             if len(content) > 10:
                 md += f"*... and {len(content) - 10} more pages*\n\n"
@@ -300,6 +308,21 @@ class ReportGenerator:
             url = item.get('url', '')
             content_size = len(item.get('content', ''))
             status = item.get('status_code', 'N/A')
+            summary = item.get('summary', '')
+            is_summarized = item.get('summarized', False)
+            
+            # Build summary section if available
+            summary_html = ""
+            if summary and is_summarized:
+                summary_html = f"""
+                <div class="ai-summary mt-3 p-3" style="background: linear-gradient(135deg, rgba(167, 139, 250, 0.1), rgba(139, 92, 246, 0.1)); border-left: 3px solid #a78bfa; border-radius: 8px;">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi bi-robot" style="font-size: 1.2rem; color: #a78bfa; margin-right: 8px;"></i>
+                        <small class="fw-bold" style="color: #7c3aed;">AI Summary</small>
+                    </div>
+                    <p class="small mb-0" style="color: #4c1d95; line-height: 1.6;">{summary[:300]}</p>
+                </div>
+                """
             
             content_cards += f"""
             <div class="col-md-6">
@@ -307,14 +330,18 @@ class ReportGenerator:
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <span class="badge badge-custom badge-info-custom">#{i}</span>
-                            <span class="badge badge-custom badge-success-custom">
-                                <i class="bi bi-check-circle"></i> {status}
-                            </span>
+                            <div>
+                                {f'<span class="badge" style="background: linear-gradient(135deg, #a78bfa, #7c3aed); margin-right: 5px;"><i class="bi bi-stars"></i> AI</span>' if is_summarized else ''}
+                                <span class="badge badge-custom badge-success-custom">
+                                    <i class="bi bi-check-circle"></i> {status}
+                                </span>
+                            </div>
                         </div>
                         <h6 class="card-title">{title[:80]}</h6>
                         <a href="{url}" target="_blank" class="content-link">
                             <i class="bi bi-link-45deg"></i> {url[:55]}...
                         </a>
+                        {summary_html}
                         <div class="d-flex justify-content-between align-items-center mt-3">
                             <small class="text-muted">
                                 <i class="bi bi-file-text"></i> {content_size:,} characters
