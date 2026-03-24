@@ -90,6 +90,14 @@ class AISummarizer:
             if len(text) > max_input_chars:
                 text = text[:max_input_chars] + "..."
             
+            # Clean text - remove null bytes and control characters
+            text = text.replace('\x00', '').replace('\r', ' ').replace('\n', ' ')
+            text = ' '.join(text.split())  # Normalize whitespace
+            
+            # Skip if empty after cleaning
+            if len(text.strip()) < 50:
+                return text
+            
             # Generate summary
             result = self.pipeline(
                 text,
@@ -101,8 +109,11 @@ class AISummarizer:
             
             return result[0]['summary_text']
             
+        except KeyboardInterrupt:
+            raise
         except Exception as e:
-            console.print(f"[yellow]⚠️  Summarization failed: {e}[/yellow]")
+            # Catch all AI errors - return None for fallback handling
+            console.print(f"[yellow]⚠️  Summarization error: {str(e)[:100]}[/yellow]")
             return None
     
     def summarize_batch(
