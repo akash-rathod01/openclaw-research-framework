@@ -431,14 +431,14 @@ Examples:
   # Tier 1: JavaScript rendering for React/Vue/Angular apps
   python orchestrator.py "https://spa-app.com" --javascript
   
-  # Tier 1: Deep crawling (5 levels, 1000 pages)
-  python orchestrator.py "https://www.nasa.gov" --depth 5 --max-sources 500
+  # Tier 1: Deep crawling (10 levels, 2000 pages)
+  python orchestrator.py "https://www.nasa.gov" --depth 10 --max-sources 2000
   
   # Tier 1: Disable structured data extraction
   python orchestrator.py "https://example.com" --no-structured
   
-  # Tier 1: All features combined
-  python orchestrator.py "https://example.com" --javascript --depth 5 --max-sources 1000
+  # Tier 1: All features combined (max depth, 5000 pages)
+  python orchestrator.py "https://example.com" --javascript --depth 10 --max-sources 5000
 """
     )
     
@@ -447,10 +447,10 @@ Examples:
     # Tier 1 enhancements
     parser.add_argument('-j', '--javascript', action='store_true',
                       help='Enable JavaScript rendering (Selenium) for modern SPAs')
-    parser.add_argument('-d', '--depth', type=int, choices=range(1, 6), metavar='DEPTH',
-                      help='Crawl depth (1-5), default: 2')
+    parser.add_argument('-d', '--depth', type=int, choices=range(1, 11), metavar='DEPTH',
+                      help='Crawl depth (1-10), default: 2')
     parser.add_argument('-m', '--max-sources', type=int, metavar='NUM',
-                      help='Maximum sources to scrape (default: 50, max: 1000)')
+                      help='Maximum sources to scrape (default: 50, max: 5000)')
     parser.add_argument('--no-structured', action='store_true',
                       help='Disable structured data extraction (JSON-LD, Schema.org)')
     parser.add_argument('--domain-filter', action='store_true', default=True,
