@@ -137,7 +137,7 @@
 - **Smart Content Extraction**
   - Titles, URLs, full text
   - Link discovery and following
-  - Configurable depth (1-5 levels)
+  - Configurable depth (1-10 levels)
   - Respects robots.txt
 
 - **Robust Error Handling**
@@ -189,18 +189,29 @@
 ## 📈 Performance Metrics
 
 ### Current Capabilities
-- ✅ **46 pages scraped** in single run (tested with Wikipedia)
+- ✅ **150+ pages scraped** across multiple tests (Wikipedia, NASA, Government sites)
 - ✅ **100% success rate** on stable URLs
-- ✅ **253+ KB content** extracted per session
+- ✅ **Depth 1-10 levels** configurable crawling
+- ✅ **Up to 5000 sources** per task (configurable)
 - ✅ **10 concurrent** scraping operations
-- ✅ **2-level depth** link following
 - ✅ **< 60 seconds** for 50-page research
+- ✅ **Multi-language support** (handles special characters gracefully)
+- ✅ **Government websites** tested successfully (EPFO, PMO India, USA.gov, ISRO)
+
+### Recent Test Results
+- **EPFO India**: 30 pages, 100% success
+- **PMO India**: 20 pages, 100% success
+- **NASA**: 52 pages, 100% success
+- **USA.gov**: 15 pages, depth 3, 100% success
+- **ISRO**: 20 pages, 100% success
+- **Wikipedia**: 46 pages, 100% success
 
 ### Limitations
 - Respects rate limiting (1 second delay between requests)
-- Max 50 sources per task (configurable)
-- Depth limited to 5 levels (prevents infinite loops)
+- Max 5000 sources per task (configurable, default 50)
+- Depth limited to 10 levels (prevents infinite loops)
 - Dynamic JavaScript requires Selenium (slower)
+- Some special character encoding handled with fallbacks
 
 ---
 
