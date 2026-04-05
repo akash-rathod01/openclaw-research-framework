@@ -41,3 +41,30 @@ rich>=13.7.0
 # Configuration
 pyyaml>=6.0.0
 python-dotenv>=1.0.0
+
+# ===========================
+# TIER 2 PROFESSIONAL FEATURES
+# ===========================
+
+# AI Content Extraction & NLP
+spacy>=3.7.0              # NLP library for entity extraction
+transformers>=4.35.0      # Hugging Face transformers for summarization
+torch>=2.1.0              # PyTorch for transformers (CPU version)
+sentencepiece>=0.1.99     # Tokenizer for transformers
+# Install spaCy model: python -m spacy download en_core_web_sm
+
+# Anti-Bot Evasion
+fake-useragent>=1.4.0     # Rotate user agents automatically
+requests-html>=0.10.0     # Enhanced requests with JS rendering
+cloudscraper>=1.2.71      # Bypass Cloudflare protection
+
+# Multi-Modal Content Extraction
+Pillow>=10.1.0            # Image processing
+PyPDF2>=3.0.0             # PDF text extraction
+pytesseract>=0.3.10       # OCR for images
+python-docx>=1.1.0        # Word document parsing
+openpyxl>=3.1.2           # Excel file parsing
+
+# Data Validation & Enrichment
+pydantic>=2.5.0           # Data validation
+validators>=0.22.0        # URL and data validators

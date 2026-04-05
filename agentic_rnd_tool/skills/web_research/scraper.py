@@ -1,6 +1,11 @@
 """
 Web Research Agent - Autonomous web scraping and research capabilities
 Part of the Agentic RnD Tool multi-agent framework
+
+TIER 2 ENHANCED: Professional Features
+- AI Content Extraction (NER, Summarization)
+- Anti-Bot Evasion (User-Agent Rotation, Advanced Headers)
+- Multi-Modal Content (Images, PDFs, Documents)
 """
 
 import requests
@@ -16,10 +21,36 @@ import time
 import json
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import os
+import hashlib
 
 # Rich console output
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
+
+# TIER 2: AI and NLP imports
+try:
+    import spacy
+    from transformers import pipeline
+    TIER2_AI_AVAILABLE = True
+except ImportError:
+    TIER2_AI_AVAILABLE = False
+
+# TIER 2: Anti-bot evasion
+try:
+    from fake_useragent import UserAgent
+    TIER2_ANTIBOT_AVAILABLE = True
+except ImportError:
+    TIER2_ANTIBOT_AVAILABLE = False
+
+# TIER 2: Multi-modal content extraction
+try:
+    from PIL import Image
+    import PyPDF2
+    import pytesseract
+    TIER2_MULTIMODAL_AVAILABLE = True
+except ImportError:
+    TIER2_MULTIMODAL_AVAILABLE = False
 
 console = Console()
 
@@ -38,11 +69,42 @@ class WebResearcher:
         """
         self.config = config or self._default_config()
         self.session = requests.Session()
+        
+        # TIER 2: Initialize user-agent rotation
+        if TIER2_ANTIBOT_AVAILABLE and self.config.get('rotate_user_agents', False):
+            self.ua_rotator = UserAgent()
+            user_agent = self.ua_rotator.random
+        else:
+            user_agent = self.config.get('user_agent', 'ResearchBot/1.0')
+        
         self.session.headers.update({
-            'User-Agent': self.config.get('user_agent', 'ResearchBot/1.0')
+            'User-Agent': user_agent,
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.5',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'DNT': '1',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1'
         })
+        
         self.visited_urls = set()
         self.failed_urls = []
+        
+        # TIER 2: Initialize NLP models (lazy loading)
+        self.nlp_model = None
+        self.summarizer = None
+        
+        # TIER 2: Create download directory for multi-modal content
+        self.download_dir = self.config.get('download_dir', 'downloads')
+        if self.config.get('download_images') or self.config.get('download_pdfs'):
+            os.makedirs(self.download_dir, exist_ok=True)
+        
+        # Show Tier 2 status
+        if self.config.get('extract_entities') or self.config.get('ai_summarize'):
+            if TIER2_AI_AVAILABLE:
+                console.print("[green]✅ Tier 2: AI Features Available[/green]")
+            else:
+                console.print("[yellow]⚠️  Tier 2: AI features disabled (install spacy, transformers)[/yellow]")
         
     def _default_config(self) -> Dict:
         """Default configuration"""
@@ -52,7 +114,7 @@ class WebResearcher:
             'timeout': 30,
             'max_concurrent': 10,
             'respect_robots': True,
-            'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            'user_agent': 'Mozilla/5.0 (Windows NT  10.0; Win64; x64) AppleWebKit/537.36',
             'max_retries': 3,
             'delay': 1.0,
             # Tier 1 enhancements (backwards compatible)
@@ -61,7 +123,23 @@ class WebResearcher:
             'max_sources_limit': 1000,  # Maximum sources allowed
             'extract_structured': True,  # Extract JSON-LD, Schema.org, etc.
             'domain_filter': True,    # Stay within same domain
-            'auto_detect_js': True    # Auto-detect JS-heavy sites
+            'auto_detect_js': True,   # Auto-detect JS-heavy sites
+            
+            # TIER 2: AI Content Extraction
+            'extract_entities': False,  # Extract named entities (people, orgs, places)
+            'ai_summarize': False,      # Generate AI summaries of content
+            'sentiment_analysis': False, # Analyze sentiment of content
+            
+            # TIER 2: Anti-Bot Evasion
+            'rotate_user_agents': False,  # Rotate user agents per request
+            'use_proxies': False,          # Use proxy rotation
+            'stealth_mode': False,         # Advanced anti-detection
+            
+            # TIER 2: Multi-Modal Content
+            'download_images': False,   # Download and analyze images
+            'extract_pdf_text': False,  # Extract text from PDFs
+            'ocr_images': False,        # OCR on images
+            'download_dir': 'downloads' # Directory for downloaded content
         }
     
     def research(self, topic: str, max_sources: Optional[int] = None, 
@@ -241,7 +319,7 @@ class WebResearcher:
     
     def _scrape_single(self, url: str, extract_links: bool = False) -> Optional[Dict]:
         """
-        Scrape a single URL
+        Scrape a single URL (TIER 2 ENHANCED)
         
         Args:
             url: URL to scrape
@@ -256,7 +334,14 @@ class WebResearcher:
         self.visited_urls.add(url)
         
         try:
-            response = self.session.get(url, timeout=self.config['timeout'])
+            # TIER 2: Use stealth headers if enabled
+            headers = self._get_stealth_headers(url) if self.config.get('stealth_mode') else None
+            
+            response = self.session.get(
+                url, 
+                timeout=self.config['timeout'],
+                headers=headers
+            )
             response.raise_for_status()
             
             soup = BeautifulSoup(response.content, 'html.parser')
@@ -297,6 +382,38 @@ class WebResearcher:
                 structured = self._extract_structured_data(soup, url)
                 if structured:
                     result['structured_data'] = structured
+            
+            # TIER 2: Extract named entities
+            if self.config.get('extract_entities'):
+                entities = self._extract_entities(text)
+                if entities:
+                    result['entities'] = entities
+                    console.print(f"[cyan]👤 Extracted {sum(len(v) for v in entities.values())} entities[/cyan]")
+            
+            # TIER 2: Generate AI summary
+            if self.config.get('ai_summarize'):
+                summary = self._generate_ai_summary(text)
+                result['ai_summary'] = summary
+                console.print(f"[cyan]📝 Generated AI summary ({len(summary)} chars)[/cyan]")
+            
+            # TIER 2: Sentiment analysis
+            if self.config.get('sentiment_analysis'):
+                sentiment = self._analyze_sentiment(text)
+                result['sentiment'] = sentiment
+            
+            # TIER 2: Download and process images
+            if self.config.get('download_images'):
+                images = self._download_and_process_images(soup, url)
+                if images:
+                    result['images'] = images
+                    console.print(f"[cyan]🖼️  Downloaded {len(images)} images[/cyan]")
+            
+            # TIER 2: Extract PDF content if it's a PDF
+            if url.lower().endswith('.pdf') and self.config.get('extract_pdf_text'):
+                pdf_content = self._extract_pdf_content(url)
+                if pdf_content:
+                    result['pdf_content'] = pdf_content
+                    result['content'] = pdf_content['text'][:5000]
             
             return result
             
@@ -613,6 +730,295 @@ class WebResearcher:
         
         print(f"💾 Results saved to: {filename}")
         return filename
+    
+    # ===========================
+    # TIER 2: AI CONTENT EXTRACTION
+    # ===========================
+    
+    def _load_nlp_models(self):
+        """Lazy load NLP models for Tier 2 AI features"""
+        if not TIER2_AI_AVAILABLE:
+            console.print("[yellow]⚠️  AI features require: pip install spacy transformers torch[/yellow]")
+            console.print("[yellow]    Also run: python -m spacy download en_core_web_sm[/yellow]")
+            return False
+        
+        try:
+            if self.nlp_model is None:
+                console.print("[cyan]📚 Loading NLP model (spaCy)...[/cyan]")
+                self.nlp_model = spacy.load('en_core_web_sm')
+            
+            if self.summarizer is None and self.config.get('ai_summarize'):
+                console.print("[cyan]🤖 Loading summarization model (this may take a minute)...[/cyan]")
+                self.summarizer = pipeline('summarization', model='facebook/bart-large-cnn')
+            
+            return True
+        except Exception as e:
+            console.print(f"[red]❌ Failed to load AI models: {e}[/red]")
+            return False
+    
+    def _extract_entities(self, text: str) -> Dict:
+        """
+        TIER 2: Extract named entities from text using spaCy
+        
+        Args:
+            text: Text to analyze
+            
+        Returns:
+            Dictionary with extracted entities
+        """
+        if not self._load_nlp_models() or not self.nlp_model:
+            return {}
+        
+        try:
+            # Limit text length for performance
+            doc = self.nlp_model(text[:10000])
+            
+            entities = {
+                'people': [],
+                'organizations': [],
+                'locations': [],
+                'dates': [],
+                'money': [],
+                'other': []
+            }
+            
+            for ent in doc.ents:
+                if ent.label_ == 'PERSON':
+                    entities['people'].append(ent.text)
+                elif ent.label_ in ['ORG', 'NORP']:
+                    entities['organizations'].append(ent.text)
+                elif ent.label_ in ['GPE', 'LOC']:
+                    entities['locations'].append(ent.text)
+                elif ent.label_ == 'DATE':
+                    entities['dates'].append(ent.text)
+                elif ent.label_ == 'MONEY':
+                    entities['money'].append(ent.text)
+                else:
+                    entities['other'].append(ent.text)
+            
+            # Deduplicate and limit
+            for key in entities:
+                entities[key] = list(set(entities[key]))[:20]
+            
+            return entities
+        except Exception as e:
+            console.print(f"[yellow]⚠️  Entity extraction failed: {e}[/yellow]")
+            return {}
+    
+    def _generate_ai_summary(self, text: str, max_length: int = 150) -> str:
+        """
+        TIER 2: Generate AI summary using transformers
+        
+        Args:
+            text: Text to summarize
+            max_length: Maximum summary length
+            
+        Returns:
+            Generated summary
+        """
+        if not self._load_nlp_models() or not self.summarizer:
+            return text[:500]  # Fallback to truncation
+        
+        try:
+            # Clean and prepare text
+            text = ' '.join(text.split())[:1024]  # Limit input length
+            
+            if len(text) < 100:
+                return text  # Too short to summarize
+            
+            summary = self.summarizer(text, max_length=max_length, min_length=30, do_sample=False)
+            return summary[0]['summary_text']
+        except Exception as e:
+            console.print(f"[yellow]⚠️  Summarization failed: {e}[/yellow]")
+            return text[:500]
+    
+    def _analyze_sentiment(self, text: str) -> Dict:
+        """
+        TIER 2: Analyze sentiment of text
+        
+        Args:
+            text: Text to analyze
+            
+        Returns:
+            Dictionary with sentiment scores
+        """
+        if not TIER2_AI_AVAILABLE:
+            return {'sentiment': 'neutral', 'confidence': 0.0}
+        
+        try:
+            from transformers import pipeline
+            sentiment_analyzer = pipeline('sentiment-analysis')
+            
+            # Analyze first 512 chars
+            result = sentiment_analyzer(text[:512])[0]
+            
+            return {
+                'sentiment': result['label'].lower(),
+                'confidence': round(result['score'], 3)
+            }
+        except Exception as e:
+            return {'sentiment': 'unknown', 'error': str(e)}
+    
+    # ===========================
+    # TIER 2: ANTI-BOT EVASION
+    # ===========================
+    
+    def _rotate_user_agent(self):
+        """TIER 2: Rotate user agent for next request"""
+        if TIER2_ANTIBOT_AVAILABLE and hasattr(self, 'ua_rotator'):
+            new_ua = self.ua_rotator.random
+            self.session.headers['User-Agent'] = new_ua
+            return new_ua
+        return self.session.headers.get('User-Agent')
+    
+    def _get_stealth_headers(self, url: str) -> Dict:
+        """
+        TIER 2: Generate realistic headers to avoid detection
+        
+        Args:
+            url: Target URL
+            
+        Returns:
+            Dictionary of headers
+        """
+        parsed = urlparse(url)
+        domain = parsed.netloc
+        
+        headers = {
+            'User-Agent': self._rotate_user_agent() if self.config.get('rotate_user_agents') else self.session.headers['User-Agent'],
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'DNT': '1',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1',
+            'Sec-Fetch-Dest': 'document',
+            'Sec-Fetch-Mode': 'navigate',
+            'Sec-Fetch-Site': 'none',
+            'Sec-Fetch-User': '?1',
+            'Cache-Control': 'max-age=0',
+            'Referer': f'https://{domain}/'
+        }
+        
+        return headers
+    
+    # ===========================
+    # TIER 2: MULTI-MODAL CONTENT
+    # ===========================
+    
+    def _download_and_process_images(self, soup: BeautifulSoup, url: str) -> List[Dict]:
+        """
+        TIER 2: Download and process images from page
+        
+        Args:
+            soup: BeautifulSoup object
+            url: Source URL
+            
+        Returns:
+            List of image metadata
+        """
+        if not TIER2_MULTIMODAL_AVAILABLE or not self.config.get('download_images'):
+            return []
+        
+        images = []
+        img_tags = soup.find_all('img', src=True)[:10]  # Limit to 10 images
+        
+        for idx, img in enumerate(img_tags):
+            try:
+                img_url = urljoin(url, img['src'])
+                
+                # Download image
+                response = self.session.get(img_url, timeout=10)
+                response.raise_for_status()
+                
+                # Generate filename
+                url_hash = hashlib.md5(img_url.encode()).hexdigest()[:8]
+                ext = img_url.split('.')[-1].split('?')[0][:4]
+                filename = f"img_{url_hash}.{ext}"
+                filepath = os.path.join(self.download_dir, filename)
+                
+                # Save image
+                with open(filepath, 'wb') as f:
+                    f.write(response.content)
+                
+                # Get image info
+                with Image.open(filepath) as pil_img:
+                    width, height = pil_img.size
+                    format_name = pil_img.format
+                
+                image_data = {
+                    'url': img_url,
+                    'local_path': filepath,
+                    'width': width,
+                    'height': height,
+                    'format': format_name,
+                    'alt_text': img.get('alt', '')
+                }
+                
+                # OCR if enabled
+                if self.config.get('ocr_images'):
+                    try:
+                        ocr_text = pytesseract.image_to_string(filepath)
+                        if ocr_text.strip():
+                            image_data['ocr_text'] = ocr_text[:500]
+                    except Exception:
+                        pass
+                
+                images.append(image_data)
+                
+            except Exception as e:
+                console.print(f"[yellow]⚠️  Image download failed: {e}[/yellow]")
+                continue
+        
+        return images
+    
+    def _extract_pdf_content(self, url: str) -> Optional[Dict]:
+        """
+        TIER 2: Extract text from PDF files
+        
+        Args:
+            url: PDF URL
+            
+        Returns:
+            Dictionary with PDF content
+        """
+        if not TIER2_MULTIMODAL_AVAILABLE or not self.config.get('extract_pdf_text'):
+            return None
+        
+        try:
+            # Download PDF
+            response = self.session.get(url, timeout=30)
+            response.raise_for_status()
+            
+            # Save temporarily
+            url_hash = hashlib.md5(url.encode()).hexdigest()[:8]
+            pdf_path = os.path.join(self.download_dir, f"pdf_{url_hash}.pdf")
+            
+            with open(pdf_path, 'wb') as f:
+                f.write(response.content)
+            
+            # Extract text
+            pdf_text = []
+            with open(pdf_path, 'rb') as f:
+                pdf_reader = PyPDF2.PdfReader(f)
+                num_pages = len(pdf_reader.pages)
+                
+                # Extract from first 10 pages
+                for page_num in range(min(10, num_pages)):
+                    page = pdf_reader.pages[page_num]
+                    pdf_text.append(page.extract_text())
+            
+            return {
+                'url': url,
+                'local_path': pdf_path,
+                'num_pages': num_pages,
+                'text': ' '.join(pdf_text)[:10000],  # Limit text
+                'extracted_pages': min(10, num_pages)
+            }
+            
+        except Exception as e:
+            console.print(f"[yellow]⚠️  PDF extraction failed: {e}[/yellow]")
+            return None
 
 
 # CLI interface for testing

@@ -462,6 +462,26 @@ Examples:
     parser.add_argument('--summary-length', type=int, default=150, metavar='LENGTH',
                       help='Max summary length in words (default: 150)')
     
+    # TIER 2: AI Content Extraction
+    parser.add_argument('--extract-entities', action='store_true',
+                      help='TIER 2: Extract named entities (people, orgs, locations)')
+    parser.add_argument('--sentiment', action='store_true',
+                      help='TIER 2: Analyze sentiment of content')
+    
+    # TIER 2: Anti-Bot Evasion
+    parser.add_argument('--rotate-ua', action='store_true',
+                      help='TIER 2: Rotate user agents to avoid detection')
+    parser.add_argument('--stealth', action='store_true',
+                      help='TIER 2: Enable stealth mode (advanced anti-bot headers)')
+    
+    # TIER 2: Multi-Modal Content
+    parser.add_argument('--download-images', action='store_true',
+                      help='TIER 2: Download and analyze images from pages')
+    parser.add_argument('--ocr', action='store_true',
+                      help='TIER 2: Perform OCR on downloaded images')
+    parser.add_argument('--extract-pdfs', action='store_true',
+                      help='TIER 2: Extract text from PDF files')
+    
     # Check for backwards compatibility (simple usage without flags)
     if len(sys.argv) < 2:
         parser.print_help()
@@ -488,9 +508,22 @@ Examples:
     
     task = ' '.join(args.task)
     
-    # Display Tier 1 features if enabled
-    if args.javascript or args.depth or args.max_sources or args.no_structured or args.summarize:
+    # Check if any Tier 2 features are enabled
+    tier2_enabled = (
+        getattr(args, 'extract_entities', False) or
+        getattr(args, 'sentiment', False) or
+        getattr(args, 'rotate_ua', False) or
+        getattr(args, 'stealth', False) or
+        getattr(args, 'download_images', False) or
+        getattr(args, 'ocr', False) or
+        getattr(args, 'extract_pdfs', False)
+    )
+    
+    # Display Tier 1 & Tier 2 features if enabled
+    if args.javascript or args.depth or args.max_sources or args.no_structured or args.summarize or tier2_enabled:
         feature_panel = []
+        
+        # Tier 1 features
         if args.javascript:
             feature_panel.append("[cyan]🌐 JavaScript Rendering:[/cyan] Enabled (Selenium)")
         if args.depth:
@@ -504,16 +537,36 @@ Examples:
         if args.summarize:
             feature_panel.append(f"[magenta]🤖 AI Summarization:[/magenta] Enabled (max {args.summary_length} words, FREE)")
         
+        # Tier 2 features  
+        if tier2_enabled:
+            feature_panel.append("")  # Separator
+            feature_panel.append("[bold green]═══ TIER 2 PROFESSIONAL FEATURES ═══[/bold green]")
+            
+        if getattr(args, 'extract_entities', False):
+            feature_panel.append("[green]👤 Entity Extraction:[/green] Enabled (NER)")
+        if getattr(args, 'sentiment', False):
+            feature_panel.append("[green]😊 Sentiment Analysis:[/green] Enabled")
+        if getattr(args, 'rotate_ua', False):
+            feature_panel.append("[green]🔄 User-Agent Rotation:[/green] Enabled")
+        if getattr(args, 'stealth', False):
+            feature_panel.append("[green]🥷 Stealth Mode:[/green] Enabled")
+        if getattr(args, 'download_images', False):
+            feature_panel.append("[green]🖼️  Image Download:[/green] Enabled")
+        if getattr(args, 'ocr', False):
+            feature_panel.append("[green]📸 OCR:[/green] Enabled")
+        if getattr(args, 'extract_pdfs', False):
+            feature_panel.append("[green]📄 PDF Extraction:[/green] Enabled")
+        
         console.print(Panel(
             '\n'.join(feature_panel),
-            title="🚀 Enhanced Features Active",
-            border_style="green"
+            title="🚀 Tier 1 Enhanced Features Active" if not tier2_enabled else "🚀 Tier 1 + Tier 2 Professional Features Active",
+            border_style="cyan" if not tier2_enabled else "green"
         ))
     
     # Initialize orchestrator with Tier 1 config
     orchestrator = AgentOrchestrator()
     
-    # Pass Tier 1 parameters to executor
+    # Pass Tier 1 + Tier 2 parameters to executor
     tier1_config = {
         'use_javascript': args.javascript,
         'depth': args.depth,
@@ -521,7 +574,18 @@ Examples:
         'extract_structured': not args.no_structured,
         'domain_filter': args.domain_filter,
         'enable_summarization': args.summarize,
-        'summary_length': args.summary_length
+        'summary_length': args.summary_length,
+        # TIER 2: AI Content Extraction
+        'extract_entities': getattr(args, 'extract_entities', False),
+        'sentiment_analysis': getattr(args, 'sentiment', False),
+        'ai_summarize': getattr(args, 'extract_entities', False) or args.summarize,  # Enable if either is set
+        # TIER 2: Anti-Bot Evasion
+        'rotate_user_agents': getattr(args, 'rotate_ua', False),
+        'stealth_mode': getattr(args, 'stealth', False),
+        # TIER 2: Multi-Modal Content
+        'download_images': getattr(args, 'download_images', False),
+        'ocr_images': getattr(args, 'ocr', False),
+        'extract_pdf_text': getattr(args, 'extract_pdfs', False)
     }
     
     # Execute task with Tier 1 enhancements
@@ -551,8 +615,10 @@ Examples:
     console.print(f"\n[bold cyan]🚀 Opening dashboard in browser...[/bold cyan]")
     webbrowser.open(f'file:///{html_path}')
     
-    # Success message with Tier 1 indicator
-    if any([args.javascript, args.depth, args.max_sources]):
+    # Success message with Tier indicator
+    if tier2_enabled:
+        console.print("\n[bold green]✨🔥 Tier 2 Professional Scraping Complete![/bold green]")
+    elif any([args.javascript, args.depth, args.max_sources]):
         console.print("\n[bold green]✨ Tier 1 Enhanced Scraping Complete![/bold green]")
     else:
         console.print("\n[bold green]✨ All reports generated successfully![/bold green]")
