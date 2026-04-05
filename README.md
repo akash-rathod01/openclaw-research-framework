@@ -89,7 +89,7 @@ pip install transformers torch
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Basic Scraping
 
@@ -101,7 +101,7 @@ python orchestrator.py "https://example.com"
 python orchestrator.py "https://example.com" --max-sources 50 --depth 3
 ```
 
-### With AI Summarization ⭐
+### With AI Summarization 
 
 ```bash
 # AI-powered summaries (recommended!)
