@@ -67,6 +67,7 @@ reports/
 scan_*.html
 scan_*.json
 research_*.json
+orchestrator_results_*.json
 
 # Environment
 .env
@@ -100,6 +101,9 @@ Desktop.ini
 *.bak
 *.backup
 *~
+
+# Internal documentation
+PRIVACY_CLEANUP_SUMMARY.md
 
 # Selenium
 chromedriver

@@ -113,4 +113,4 @@ This project's multi-agent architecture was inspired by OpenClaw-style agent orc
 ---
 
 *Last Updated: March 25, 2026*  
-*For questions about licensing, contact: Akash Rathod*
+*For questions about licensing, see the project repository*

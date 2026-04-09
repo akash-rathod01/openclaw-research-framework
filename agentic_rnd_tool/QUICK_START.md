@@ -2,7 +2,7 @@
 
 **Last Updated:** March 25, 2026  
 **Version:** 1.1.0 (Tier 1 Enhanced + FREE AI Summarization)  
-**Created by:** Akash Rathod
+**Created by:** OpenClaw Framework Team
 
 ---
 
@@ -23,7 +23,7 @@
 
 ### **1. Basic Web Scraping (No AI)**
 ```bash
-cd D:\LATEST_GENAI_AGENTIC_PROJECTS\agentic_rnd_tool\agentic_rnd_tool
+cd agentic_rnd_tool
 
 # Simple scraping (10 pages)
 python orchestrator.py "https://www.example.com"
@@ -345,8 +345,8 @@ code report_*.html  # Or just open in browser (auto-opens anyway)
 ```
 
 **Location of Everything:**
-- **Code:** `D:\LATEST_GENAI_AGENTIC_PROJECTS\agentic_rnd_tool\agentic_rnd_tool\`
-- **Reports:** `reports/` folder (20+ files generated today)
+- **Code:** Project root directory
+- **Reports:** `reports/` folder
 - **Run from:** Same directory as `orchestrator.py`
 
 ---
@@ -379,5 +379,5 @@ code report_*.html  # Or just open in browser (auto-opens anyway)
 ---
 
 *Last updated: March 25, 2026 at 3:50 AM*  
-*Created by: Akash Rathod*  
+*Created by: OpenClaw Framework Team*  
 *Framework: OpenClaw v1.1.0 (Tier 1 Enhanced + FREE AI Summarization)*

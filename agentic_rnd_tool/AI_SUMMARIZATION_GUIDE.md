@@ -427,7 +427,7 @@ Track:
 
 ## 🤝 Credits
 
-- **Created by:** Akash Rathod
+- **Created by:** OpenClaw Framework Team
 - **Framework:** OpenClaw v1.1.0
 - **Model:** facebook/bart-large-cnn (Meta AI)
 - **Libraries:** Hugging Face Transformers, PyTorch
