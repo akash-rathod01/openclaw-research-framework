@@ -1,4 +1,5 @@
-# 🔬 OpenClaw Research Framework
+
+# OpenClaw Research Framework
 
 **Multi-Agent Web Scraping & Research Tool with FREE AI Summarization**
 
@@ -21,33 +22,36 @@
 
 ---
 
-## 🌟 Why OpenClaw?
+## Why OpenClaw?
 
-- **🆓 Totally Free** - No API keys, no subscriptions, no hidden costs
-- **🤖 AI-Powered** - Built-in text summarization (85-95% compression)
-- **⚡ Production-Ready** - Handles JavaScript, deep crawling, structured data
-- **📊 Beautiful Reports** - HTML dashboards, Markdown docs, JSON exports
-- **🎯 Easy to Use** - Install and run in under 2 minutes
+
+- Totally Free - No API keys, no subscriptions, no hidden costs
+- AI-Powered - Built-in text summarization (85-95% compression)
+- Production-Ready - Handles JavaScript, deep crawling, structured data
+- Beautiful Reports - HTML dashboards, Markdown docs, JSON exports
+- Easy to Use - Install and run in under 2 minutes
 
 **Tested** on 330+ pages across government, academic, and commercial websites.
 
 ---
 
-## ✨ Features
+## Features
 
-### 🔥 Core Capabilities
-- **JavaScript Rendering** - Scrapes React, Vue, Angular apps with Selenium
-- **Deep Crawling** - Follow links up to 5 levels deep, 1000 pages max
-- **Structured Data** - Extracts JSON-LD, Schema.org, OpenGraph metadata
-- **Parallel Processing** - 10 concurrent workers for fast scraping
-- **AI Summarization** - FREE Hugging Face transformers (no API keys!)
+### Core Capabilities
 
-### 📊 Output Formats
-- **HTML Dashboards** - Interactive reports with gradients & animations
-- **Markdown** - Clean, shareable documentation
-- **JSON** - Structured data for automation
+- JavaScript Rendering - Scrapes React, Vue, Angular apps with Selenium
+- Deep Crawling - Follow links up to 5 levels deep, 1000 pages max
+- Structured Data - Extracts JSON-LD, Schema.org, OpenGraph metadata
+- Parallel Processing - 10 concurrent workers for fast scraping
+- AI Summarization - FREE Hugging Face transformers (no API keys!)
 
-### 🛠️ Additional Features
+### Output Formats
+
+- HTML Dashboards - Interactive reports with gradients & animations
+- Markdown - Clean, shareable documentation
+- JSON - Structured data for automation
+
+### Additional Features
 - Rich console UI with progress bars
 - Graceful error handling
 - Respects robots.txt
