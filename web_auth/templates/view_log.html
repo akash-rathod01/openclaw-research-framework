@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Log</title>
+</head>
+<body>
+    <h2>Job Log for Job #{{ job.id }}</h2>
+    <pre style="background:#f4f4f4; padding:1em; border:1px solid #ccc;">{{ job.log or 'No log available.' }}</pre>
+    <a href="/job_dashboard">Back to Job Dashboard</a>
+</body>
+</html>

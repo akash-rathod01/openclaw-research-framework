@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Dashboard</title>
+</head>
+<body>
+    <h2>Centralized Job Dashboard</h2>
+    {% if user.role in ['admin', 'user'] %}
+    <form method="POST" action="/start_job">
+        <label for="url">Paste URL to scrape:</label>
+        <input type="text" id="url" name="url" required style="width: 400px;">
+        <button type="submit">Start Job</button>
+    </form>
+    <br>
+    {% endif %}
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>URL</th>
+            <th>Status</th>
+            <th>Owner</th>
+            <th>Created</th>
+            <th>Updated</th>
+            <th>Result</th>
+            {% if user.role in ['admin', 'user'] %}<th>Actions</th>{% endif %}
+        </tr>
+        {% for job in jobs %}
+        <tr>
+            <td>{{ job.id }}</td>
+            <td>{{ job.url }}</td>
+            <td>{{ job.status }}</td>
+            <td>{{ job.owner.username }}</td>
+            <td>{{ job.created_at }}</td>
+            <td>{{ job.updated_at }}</td>
+            <td>{% if job.result_path %}<a href="{{ job.result_path }}">View</a>{% else %}-{% endif %}</td>
+            {% if user.role in ['admin', 'user'] %}
+            <td>
+                {% if job.status in ['pending', 'running'] %}
+                <form method="POST" action="/stop_job/{{ job.id }}">
+                    <button type="submit">Stop</button>
+                </form>
+                {% endif %}
+                <form method="POST" action="/delete_job/{{ job.id }}">
+                    <button type="submit">Delete</button>
+                </form>
+                <a href="/view_log/{{ job.id }}">View Log</a>
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+    {% if user.role in ['admin', 'user'] %}
+    <h3>Start New Job</h3>
+    <form method="POST" action="/start_job">
+        <label>URL:</label><input type="text" name="url" required>
+        <button type="submit">Start</button>
+    </form>
+    {% endif %}
+    <a href="/dashboard">Back to Dashboard</a>
+</body>
+</html>

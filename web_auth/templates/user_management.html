@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Management</title>
+</head>
+<body>
+    <h2>User Management (Admin Only)</h2>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Change Role</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.role }}</td>
+            <td>
+                <form method="POST" action="/change_role/{{ user.id }}">
+                    <select name="role">
+                        <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>admin</option>
+                        <option value="user" {% if user.role == 'user' %}selected{% endif %}>user</option>
+                        <option value="viewer" {% if user.role == 'viewer' %}selected{% endif %}>viewer</option>
+                    </select>
+                    <button type="submit">Update</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="/dashboard">Back to Dashboard</a>
+</body>
+</html>

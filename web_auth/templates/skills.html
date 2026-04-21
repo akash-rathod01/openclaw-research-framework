@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Available Skills</title>
+</head>
+<body>
+    <h2>Discovered Skills</h2>
+    <ul>
+        {% for skill in skills %}
+        <li>{{ skill.name }} ({{ skill.path }})</li>
+        {% else %}
+        <li>No skills found in /skills directory.</li>
+        {% endfor %}
+    </ul>
+    <a href="/dashboard">Back to Dashboard</a>
+</body>
+</html>
