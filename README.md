@@ -303,11 +303,11 @@ for page in results:
 - ✅ **Workaround:** Use without `--summarize` flag (scraping still works!)
 - ℹ️ **Future:** Multilingual support planned (mT5 model)
 
-### Enterprise Readiness
-- ✅ **65% enterprise features** (production-ready for teams)
-- **Implemented:** Multi-user auth, RBAC, job management, API, database, background processing
-- **Missing:** Cloud deployment, SLA, advanced monitoring, report branding
-- **See:** [OVERVIEW.md](OVERVIEW.md) for full assessment
+### 🏢 Enterprise Readiness
+- ✅ **65% enterprise features** (production-ready for teams!)
+- **✅ Implemented:** Multi-user auth, RBAC, job management, API, database, background processing
+- **⚠️ Missing:** Cloud deployment, SLA, advanced monitoring, report branding
+- **📖 See:** [OVERVIEW.md](OVERVIEW.md) for full enterprise assessment
 
 ---
 
