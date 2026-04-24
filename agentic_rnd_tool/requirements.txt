@@ -68,3 +68,21 @@ openpyxl>=3.1.2           # Excel file parsing
 # Data Validation & Enrichment
 pydantic>=2.5.0           # Data validation
 validators>=0.22.0        # URL and data validators
+
+# ===========================
+# WEB AUTHENTICATION & API
+# ===========================
+
+# Flask Web Framework
+Flask>=3.0.0              # Web application framework
+Flask-SQLAlchemy>=3.0.0   # SQLAlchemy integration for Flask
+Flask-Login>=0.6.3        # User session management
+Werkzeug>=3.0.0           # WSGI utilities
+
+# Background Task Processing
+celery>=5.3.0             # Distributed task queue
+redis>=5.0.0              # Redis client for Celery broker
+
+# Security & Encryption
+cryptography>=41.0.0      # Encryption for sensitive data
+MarkupSafe>=2.1.0         # HTML/XML escaping

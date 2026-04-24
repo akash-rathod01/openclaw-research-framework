@@ -10,34 +10,50 @@ celery_app = Celery(
 
 @celery_app.task
 def run_scraping_job(job_id, url):
+    """Background task to run scraping job"""
     # Import here to avoid circular import
-    from web_auth.app import db
-    from web_auth.job_model import Job
+    try:
+        from web_auth.app import app
+        from web_auth.database import db
+        from web_auth.job_model import Job
+    except ModuleNotFoundError:
+        from app import app
+        from database import db
+        from job_model import Job
     from datetime import datetime
     import subprocess
-    job = Job.query.get(job_id)
-    if not job:
-        return 'Job not found'
-    job.status = 'running'
-    db.session.commit()
-    try:
-        result = subprocess.run([
-            'python',
-            os.path.abspath(os.path.join(os.path.dirname(__file__), '../orchestrator.py')),
-            url,
-            '--max-sources', '10'
-        ], capture_output=True, text=True, timeout=600)
-        job.log = (result.stdout or '') + '\n' + (result.stderr or '')
-        reports_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../reports'))
-        report_files = [f for f in os.listdir(reports_dir) if f.startswith('report_') and f.endswith('.html')]
-        if report_files:
-            latest_report = max(report_files, key=lambda f: os.path.getctime(os.path.join(reports_dir, f)))
-            job.result_path = f'/reports/{latest_report}'
-        job.status = 'completed' if result.returncode == 0 else 'failed'
-    except Exception as e:
-        job.status = 'failed'
-        job.result_path = None
-        job.log = str(e)
-    job.updated_at = datetime.utcnow()
-    db.session.commit()
-    return job.status
+    
+    with app.app_context():
+        job = Job.query.get(job_id)
+        if not job:
+            return 'Job not found'
+        
+        job.status = 'running'
+        db.session.commit()
+        
+        try:
+            result = subprocess.run([
+                'python',
+                os.path.abspath(os.path.join(os.path.dirname(__file__), '../orchestrator.py')),
+                url,
+                '--max-sources', '10'
+            ], capture_output=True, text=True, timeout=600)
+            
+            job.log = (result.stdout or '') + '\n' + (result.stderr or '')
+            reports_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../reports'))
+            
+            if os.path.exists(reports_dir):
+                report_files = [f for f in os.listdir(reports_dir) if f.startswith('report_') and f.endswith('.html')]
+                if report_files:
+                    latest_report = max(report_files, key=lambda f: os.path.getctime(os.path.join(reports_dir, f)))
+                    job.result_path = f'/reports/{latest_report}'
+            
+            job.status = 'completed' if result.returncode == 0 else 'failed'
+        except Exception as e:
+            job.status = 'failed'
+            job.result_path = None
+            job.log = str(e)
+        
+        job.updated_at = datetime.utcnow()
+        db.session.commit()
+        return job.status

@@ -14,8 +14,12 @@ def decrypt_data(token):
     if token is None:
         return None
     return fernet.decrypt(token.encode()).decode()
+
 from datetime import datetime
-from web_auth.app import db, User
+try:
+    from web_auth.database import db
+except ModuleNotFoundError:
+    from database import db
 
 class Job(db.Model):
     id = db.Column(db.Integer, primary_key=True)
