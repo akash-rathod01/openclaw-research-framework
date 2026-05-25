@@ -17,7 +17,7 @@
 <p>
 <a href="https://github.com/akash-rathod01/openclaw-research-framework/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/akash-rathod01/openclaw-research-framework?style=social"></a>
 <a href="https://github.com/akash-rathod01/openclaw-research-framework/network/members"><img alt="GitHub forks" src="https://img.shields.io/github/forks/akash-rathod01/openclaw-research-framework?style=social"></a>
-<a href="https://opensource.org/licenses/MIT"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg"></a>
+<a href="https://www.apache.org/licenses/LICENSE-2.0"><img alt="License: Apache 2.0" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"></a>
 <a href="https://www.python.org/downloads/"><img alt="Python 3.13+" src="https://img.shields.io/badge/python-3.13+-blue.svg"></a>
 <img alt="Status" src="https://img.shields.io/badge/Status-Production%20Ready-brightgreen">
 <img alt="AI" src="https://img.shields.io/badge/AI-FREE%20(Hugging%20Face)-purple">

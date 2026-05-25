@@ -1,0 +1,56 @@
+OpenClaw Research Framework
+Copyright 2026 Akash Rathod
+
+This product includes software developed by Akash Rathod (https://github.com/akash-rathod01).
+
+This software uses the following third-party libraries:
+
+1. facebook/bart-large-cnn
+   - Transformer model for text summarization
+   - License: Apache License 2.0
+   - Copyright: Facebook AI Research (FAIR)
+   - URL: https://huggingface.co/facebook/bart-large-cnn
+
+2. Hugging Face Transformers
+   - Library for state-of-the-art NLP models
+   - License: Apache License 2.0
+   - Copyright: Hugging Face Inc.
+   - URL: https://github.com/huggingface/transformers
+
+3. Flask
+   - Web application framework
+   - License: BSD-3-Clause
+   - Copyright: Pallets
+   - URL: https://github.com/pallets/flask
+
+4. Selenium WebDriver
+   - Browser automation tool
+   - License: Apache License 2.0
+   - Copyright: Software Freedom Conservancy
+   - URL: https://github.com/SeleniumHQ/selenium
+
+5. Beautiful Soup 4
+   - HTML/XML parsing library
+   - License: MIT License
+   - Copyright: Leonard Richardson
+   - URL: https://www.crummy.com/software/BeautifulSoup/
+
+6. Celery
+   - Distributed task queue
+   - License: BSD-3-Clause
+   - Copyright: Ask Solem & contributors
+   - URL: https://github.com/celery/celery
+
+7. PyTorch
+   - Deep learning framework
+   - License: BSD-3-Clause
+   - Copyright: Facebook AI Research and Contributors
+   - URL: https://github.com/pytorch/pytorch
+
+8. OWASP ZAP (Zed Attack Proxy)
+   - Security testing tool (optional integration)
+   - License: Apache License 2.0
+   - Copyright: OWASP Foundation
+   - URL: https://www.zaproxy.org/
+
+For a complete list of dependencies and their licenses, see requirements.txt and training/training_requirements.txt.

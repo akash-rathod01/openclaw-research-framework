@@ -9,7 +9,7 @@ version: "1.0.0"
 date-released: "2026-05-25"
 url: "https://github.com/akash-rathod01/openclaw-research-framework"
 repository-code: "https://github.com/akash-rathod01/openclaw-research-framework"
-license: MIT
+license: Apache-2.0
 
 authors:
   - family-names: "Rathod"
