@@ -1,0 +1,29 @@
+# Training Requirements for OpenClaw AI Fine-Tuning
+# Install with: pip install -r training_requirements.txt
+
+# Core ML libraries
+transformers>=4.35.0
+torch>=2.1.0
+datasets>=2.14.0
+
+# Evaluation metrics
+rouge-score>=0.1.2
+sacrebleu>=2.3.1
+bert-score>=0.3.13
+nltk>=3.8.1
+
+# Text processing
+textstat>=0.7.3
+spacy>=3.7.0
+
+# Experiment tracking (optional but recommended)
+wandb>=0.16.0
+tensorboard>=2.15.0
+
+# Progress bars and utilities
+tqdm>=4.66.0
+pandas>=2.1.0
+numpy>=1.24.0
+
+# GPU acceleration (will use CUDA if available)
+accelerate>=0.24.0

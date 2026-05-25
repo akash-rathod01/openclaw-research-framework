@@ -1,16 +1,44 @@
 
+<div align="center">
+
+```
+  ___                   ____ _               
+ / _ \ _ __   ___ _ __ / ___| | __ ___      __
+| | | | '_ \ / _ \ '_ \| |   | |/ _` \ \ /\ / /
+| |_| | |_) |  __/ | | | |___| | (_| |\ V  V / 
+ \___/| .__/ \___|_| |_|\____|_|\__,_| \_/\_/  
+      |_|                                       
+```
+
 # OpenClaw Research Framework
 
-**Multi-Agent Web Scraping & Research Tool with FREE AI Summarization**
+### 🔬 Multi-Agent Web Scraping & Research Tool with FREE AI Summarization
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.13+](https://img.shields.io/badge/python-3.13+-blue.svg)](https://www.python.org/downloads/)
-[![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)]()
-[![AI](https://img.shields.io/badge/AI-FREE%20(Hugging%20Face)-purple)]()
-[![GitHub Stars](https://img.shields.io/github/stars/akash-rathod01/openclaw-research-framework?style=social)](https://github.com/akash-rathod01/openclaw-research-framework/stargazers)
+<p>
+<a href="https://github.com/akash-rathod01/openclaw-research-framework/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/akash-rathod01/openclaw-research-framework?style=social"></a>
+<a href="https://github.com/akash-rathod01/openclaw-research-framework/network/members"><img alt="GitHub forks" src="https://img.shields.io/github/forks/akash-rathod01/openclaw-research-framework?style=social"></a>
+<a href="https://opensource.org/licenses/MIT"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg"></a>
+<a href="https://www.python.org/downloads/"><img alt="Python 3.13+" src="https://img.shields.io/badge/python-3.13+-blue.svg"></a>
+<img alt="Status" src="https://img.shields.io/badge/Status-Production%20Ready-brightgreen">
+<img alt="AI" src="https://img.shields.io/badge/AI-FREE%20(Hugging%20Face)-purple">
+<img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg">
+</p>
+
+<h3><i>Autonomous web scraping with AI-powered summarization • 100% FREE forever • No API keys needed</i></h3>
+
+<p>
+<strong>Created by <a href="https://github.com/akash-rathod01">Akash Rathod</a></strong> | 
+<a href="https://linkedin.com/in/akash-rathod01">LinkedIn</a> | 
+<a href="https://github.com/akash-rathod01/openclaw-research-framework">⭐ Star on GitHub</a>
+</p>
+
+<h4>🎯 330+ Pages Tested • 95-100% Success Rate • Government & Academic Sites Validated</h4>
+
+</div>
+
+---
 
 <div align="center">
-  <p><i>Autonomous web scraping with AI-powered summarization • FREE forever • No API keys needed</i></p>
   <p>
     <a href="#-features">Features</a> •
     <a href="#-installation">Installation</a> •
