@@ -867,3 +867,5 @@ scanner.scan(demo_urls, scan_type='passive')
 ---
 
 **Built with ❤️ for autonomous research and security assessment**
+ 
+ 
