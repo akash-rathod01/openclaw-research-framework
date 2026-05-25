@@ -294,7 +294,7 @@ A: Don't worry! We'll explain why and help you improve it.
 
 **Creator:** Akash Rathod  
 **GitHub:** [@akash-rathod01](https://github.com/akash-rathod01)  
-**LinkedIn:** [linkedin.com/in/akash-rathod01](https://linkedin.com/in/akash-rathod01)  
+**LinkedIn:** [linkedin.com/in/aakash-rathod-aiml](https://www.linkedin.com/in/aakash-rathod-aiml/)  
 **Email:** akash.rathod01@example.com
 
 ---

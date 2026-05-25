@@ -28,7 +28,7 @@
 
 <p>
 <strong>Created by <a href="https://github.com/akash-rathod01">Akash Rathod</a></strong> | 
-<a href="https://linkedin.com/in/akash-rathod01">LinkedIn</a> | 
+<a href="https://www.linkedin.com/in/aakash-rathod-aiml/">LinkedIn</a> | 
 <a href="https://github.com/akash-rathod01/openclaw-research-framework">⭐ Star on GitHub</a>
 </p>
 

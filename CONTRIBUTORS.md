@@ -12,7 +12,7 @@
   - Training system for model fine-tuning
   - 330+ pages of testing and validation
   - Complete documentation (900+ lines)
-- **Contact:** [LinkedIn](https://linkedin.com/in/akash-rathod01) | [GitHub](https://github.com/akash-rathod01)
+- **Contact:** [LinkedIn](https://www.linkedin.com/in/aakash-rathod-aiml/) | [GitHub](https://github.com/akash-rathod01)
 
 ---
 
