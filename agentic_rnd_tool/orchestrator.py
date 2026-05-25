@@ -486,6 +486,7 @@ Examples:
     if len(sys.argv) < 2:
         parser.print_help()
         console.print("\n[yellow]💡 Tip:[/yellow] Try: python orchestrator.py \"https://www.nasa.gov\"")
+        
         return
     
     # Handle backwards compatibility - if first arg doesn't start with -, parse old way
