@@ -1,0 +1,50 @@
+# This file allows others to cite your work properly
+# Format: Citation File Format (CFF) - GitHub standard
+
+cff-version: 1.2.0
+message: "If you use OpenClaw Research Framework in your research, please cite it as below."
+type: software
+title: "OpenClaw Research Framework"
+version: "1.0.0"
+date-released: "2026-05-25"
+url: "https://github.com/akash-rathod01/openclaw-research-framework"
+repository-code: "https://github.com/akash-rathod01/openclaw-research-framework"
+license: MIT
+
+authors:
+  - family-names: "Rathod"
+    given-names: "Akash"
+    email: "akash.rathod01@example.com"
+    orcid: "https://orcid.org/0000-0000-0000-0000"
+    affiliation: "Independent Researcher"
+
+abstract: >
+  OpenClaw is a multi-agent web research framework that autonomously 
+  scrapes websites, performs AI-powered summarization (FREE, no API keys), 
+  and generates professional reports. It combines web scraping, AI 
+  summarization using Hugging Face transformers, and security scanning 
+  (OWASP ZAP) in a single open-source tool. Tested on 330+ pages including 
+  government (CIA, FBI) and academic (IIT Bombay) websites with 95-100% 
+  success rates.
+
+keywords:
+  - web scraping
+  - multi-agent systems
+  - AI summarization
+  - BART model
+  - research automation
+  - open source
+  - Hugging Face
+  - OWASP ZAP
+  - Python
+  - machine learning
+
+preferred-citation:
+  type: software
+  authors:
+    - family-names: "Rathod"
+      given-names: "Akash"
+  title: "OpenClaw Research Framework: Multi-Agent Web Scraping with FREE AI Summarization"
+  year: 2026
+  url: "https://github.com/akash-rathod01/openclaw-research-framework"
+  version: "1.0.0"

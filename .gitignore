@@ -1,0 +1,79 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Reports (keep generated reports out of git)
+reports/*.html
+reports/*.json
+reports/*.md
+
+# Logs
+*.log
+logs/
+
+# Environment variables
+.env
+.env.local
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+instance/
+
+# Cache
+.cache/
+.pytest_cache/
+
+# ===============================================
+# MARKETING & PROMOTIONAL FILES (KEEP PRIVATE!)
+# ===============================================
+# These are for YOUR use, not for public GitHub
+# They contain marketing strategies and could look "fame-seeking"
+
+ENHANCEMENT_ROADMAP.md
+VIDEO_SCRIPT.md
+SOCIAL_MEDIA_KIT.md
+HOW_TO_SHARE_PROPERLY.md
+PRE_LAUNCH_AUDIT.md
+AUDIT_SUMMARY.md
+PUBLIC_VS_PRIVATE_GUIDE.md
+CLEANUP_COMMANDS.md
+QUICK_FIX.ps1
+
+# These files are now in: D:\openclaw_private_marketing\
