@@ -32,7 +32,8 @@
 <a href="https://github.com/akash-rathod01/openclaw-research-framework">⭐ Star on GitHub</a>
 </p>
 
-<h4>🎯 330+ Pages Tested • 95-100% Success Rate • Government & Academic Sites Validated</h4>
+<h4>🎯 400+ Pages Tested • 97.5% Success Rate • 8 Diverse Sites Validated</h4>
+<p><a href="TESTING_VALIDATION.md">📊 View Complete Testing Report</a></p>
 
 </div>
 
@@ -44,6 +45,7 @@
     <a href="#-installation">Installation</a> •
     <a href="#-quick-start">Quick Start</a> •
     <a href="#-documentation">Documentation</a> •
+    <a href="#-testing-validation">Testing & Validation</a> •
     <a href="#-contributing">Contributing</a>
   </p>
 </div>
@@ -785,7 +787,40 @@ triggers:
 3. Reference sub-agents
 4. Add memory integration
 5. Document error handling
+## 🧪 Testing & Validation
 
+**Production-Ready Status: 97.5% Success Rate Across 400+ Pages**
+
+OpenClaw has been extensively tested on diverse, real-world websites:
+
+| Website Type | Example Sites | Pages Tested | Success Rate |
+|--------------|---------------|--------------|--------------|
+| **Academic** | IIT Bombay, MIT | 100+ | 95-100% |
+| **Government** | CIA.gov, NASA | 50+ | 100% |
+| **Technical Docs** | Python.org, GitHub | 85+ | 100% |
+| **Encyclopedia** | Wikipedia | 30+ | 100% |
+| **Security Testing** | OWASP TestSites | 47+ | 100% |
+| **Tech Platforms** | GitHub, Stack Overflow | 20+ | 100% |
+
+**Key Validation Metrics:**
+- ✅ **400+ pages** successfully scraped across **8 diverse domains**
+- ✅ **307 AI summaries** generated with **98.7% success rate**
+- ✅ **97.5% overall success** rate (blocks from high-security sites expected)
+- ✅ **Zero crashes** during 6+ hours of continuous testing
+- ✅ **Ethical compliance** - Respects robots.txt, rate limits, authentication
+
+**Tested Site Categories:**
+- 🎓 Complex academic sites with multi-level navigation
+- 🏛️ High-security government portals
+- 💻 JavaScript-heavy SPAs (React, Angular)
+- 📚 Large documentation repositories
+- 🔒 Security testing platforms (legal targets)
+
+📊 **[View Complete Testing Report →](TESTING_VALIDATION.md)**
+
+*Detailed methodology, performance benchmarks, and quality metrics included.*
+
+---
 ## 📖 Documentation
 
 - [SOUL.md](SOUL.md) - Agent identity
