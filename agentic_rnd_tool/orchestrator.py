@@ -1,6 +1,11 @@
 """
-OpenClaw Orchestrator Engine
+OpenClaw Orchestrator Engine v1.1
 Main coordination system for multi-agent research and security framework
+
+NEW IN v1.1:
+- Source ranking for intelligent URL prioritization
+- Adaptive planning engine with decision trees
+- Rule-based reasoning agent for smart decisions
 """
 
 import json
@@ -21,6 +26,11 @@ from rich.tree import Tree
 from rich.syntax import Syntax
 from rich import print as rprint
 
+# v1.1 Enhancements
+from skills.source_ranker import SourceRanker, URLScore
+from planning_engine import PlanningEngine, ExecutionGoal, ExecutionState
+from skills.reasoning_agent import ReasoningAgent, ReasoningContext, Decision
+
 console = Console()
 
 
@@ -30,7 +40,7 @@ class AgentOrchestrator:
     """
     
     def __init__(self, base_path: Optional[Path] = None):
-        """Initialize the orchestrator"""
+        """Initialize the orchestrator with v1.1 enhancements"""
         self.base_path = base_path or Path(__file__).parent
         self.config = self._load_config()
         self.soul = self._load_soul()
@@ -38,11 +48,24 @@ class AgentOrchestrator:
         self.memory = self._load_memory()
         self.user_prefs = self._load_user_prefs()
         
+        # v1.1: Initialize new intelligent systems
+        self.source_ranker = SourceRanker()
+        self.reasoning_agent = ReasoningAgent()
+        self.planner = None  # Initialize per-task with specific goal
+        
+        # Track v1.1 feature usage
+        self.v11_stats = {
+            'urls_ranked': 0,
+            'decisions_made': 0,
+            'plans_created': 0
+        }
+        
         # Rich console initialization banner
         console.print(Panel(
-            f"[bold cyan]{self.config['name']}[/bold cyan] [dim]v{self.config['version']}[/dim]\n"
+            f"[bold cyan]{self.config['name']}[/bold cyan] [dim]v1.1.0[/dim]\n"
             f"[yellow]Soul:[/yellow] {self.soul.get('identity', 'Research & Security Agent')}\n"
-            f"[green]Agents:[/green] {len(self.config['agents'])}",
+            f"[green]Agents:[/green] {len(self.config['agents'])}\n"
+            f"[magenta]✨ NEW:[/magenta] Source Ranking • Planning Engine • Reasoning Agent",
             title="🤖 OpenClaw Orchestrator",
             border_style="cyan"
         ))
@@ -107,15 +130,30 @@ class AgentOrchestrator:
         """
         Main execution entry point - analyzes task and dispatches to appropriate agents
         
+        v1.1: Now uses Planning Engine and Reasoning Agent for intelligent execution
+        
         Args:
             task: User's task/query (can be URL, search term, or command)
-        console.print(f"\n[bold yellow]🎯 Task:[/bold yellow] [cyan]{task}[/cyan]parameters
+            **kwargs: Additional parameters
             
         Returns:
             Combined results from all agents
         """
-        print(f"\n🎯 Task: {task}")
-        print(f"📋 Analyzing and planning execution...")
+        console.print(f"\n[bold yellow]🎯 Task:[/bold yellow] [cyan]{task}[/cyan]")
+        
+        # v1.1: Initialize planning engine with goal
+        goal = ExecutionGoal(
+            goal_type=kwargs.get('goal_type', 'comprehensive'),
+            target_sources=kwargs.get('max_sources', 50),
+            max_depth=kwargs.get('depth', 3),
+            require_summarization=kwargs.get('enable_summarization', False),
+            prioritize_authority=True
+        )
+        
+        self.planner = PlanningEngine(goal)
+        self.v11_stats['plans_created'] += 1
+        
+        console.print(f"[dim]🧠 Planning execution with goal: {goal.goal_type}[/dim]")
         
         # Determine which agents to activate
         agents_to_run = self._plan_execution(task, **kwargs)
@@ -197,6 +235,22 @@ class AgentOrchestrator:
         # Synthesize results
         final_result = self._synthesize_results(results)
         
+        # v1.1: Display intelligent systems usage
+        if any(self.v11_stats.values()):
+            console.print("\n[bold magenta]✨ v1.1 Intelligent Systems Report:[/bold magenta]")
+            stats_table = Table(border_style="magenta", show_header=False)
+            stats_table.add_column("Feature", style="cyan")
+            stats_table.add_column("Usage", style="yellow", justify="right")
+            
+            if self.v11_stats['urls_ranked'] > 0:
+                stats_table.add_row("🎯 URLs Ranked", str(self.v11_stats['urls_ranked']))
+            if self.v11_stats['decisions_made'] > 0:
+                stats_table.add_row("🧠 Reasoning Decisions", str(self.v11_stats['decisions_made']))
+            if self.v11_stats['plans_created'] > 0:
+                stats_table.add_row("📋 Execution Plans", str(self.v11_stats['plans_created']))
+            
+            console.print(stats_table)
+        
         # Update memory
         self._update_memory(task, final_result)
         
@@ -256,6 +310,8 @@ class AgentOrchestrator:
     def _spawn_agent(self, agent_id: str, task: str, **kwargs) -> Dict:
         """
         Spawn and execute a sub-agent
+        
+        v1.1: Integrates source ranking and reasoning agent for web_research
         """
         # Find agent configuration
         agent_config = None
@@ -272,12 +328,52 @@ class AgentOrchestrator:
             agent_path = self.base_path / agent_config['path'] / agent_config['entry_point']
             
             if agent_id == 'web_research':
+                # v1.1: Use reasoning agent to decide if URL should be scraped
+                reasoning_context = ReasoningContext(
+                    url=task,
+                    depth=0,
+                    sources_collected=0,
+                    target_sources=kwargs.get('max_sources', 50)
+                )
+                
+                decision = self.reasoning_agent.should_scrape_url(reasoning_context)
+                self.v11_stats['decisions_made'] += 1
+                
+                console.print(f"[dim]🧠 Reasoning: {decision.reasoning[:80]}...[/dim]")
+                
+                if decision.decision == Decision.SKIP:
+                    console.print(f"[yellow]⚠️  Reasoning agent skipped URL[/yellow]")
+                    return {
+                        'skipped': True,
+                        'reason': decision.reasoning,
+                        'sources_scraped': 0,
+                        'content': []
+                    }
+                
                 # Import WebResearcher
                 sys.path.insert(0, str(self.base_path / agent_config['path']))
                 from scraper import WebResearcher
                 
                 researcher = WebResearcher()
                 result = researcher.research(task, **kwargs)
+                
+                # v1.1: Apply source ranking to discovered URLs
+                if 'urls' in result and result['urls']:
+                    console.print(f"[dim]🎯 Ranking {len(result['urls'])} discovered URLs...[/dim]")
+                    
+                    ranked_urls = self.source_ranker.rank_sources(result['urls'], context=task)
+                    self.v11_stats['urls_ranked'] += len(result['urls'])
+                    
+                    # Update result with ranked URLs
+                    result['urls_ranked'] = [score.url for score in ranked_urls[:20]]  # Top 20
+                    result['ranking_report'] = f"Ranked {len(ranked_urls)} URLs by authority and relevance"
+                    
+                    # Show top 3 ranked URLs
+                    if ranked_urls:
+                        console.print("[dim]🏆 Top ranked URLs:[/dim]")
+                        for idx, score in enumerate(ranked_urls[:3], 1):
+                            console.print(f"[dim]  {idx}. {score.url} (score: {score.total_score:.2f})[/dim]")
+                
                 return result
                 
             elif agent_id == 'security_scan':
@@ -486,7 +582,7 @@ Examples:
     if len(sys.argv) < 2:
         parser.print_help()
         console.print("\n[yellow]💡 Tip:[/yellow] Try: python orchestrator.py \"https://www.nasa.gov\"")
-        
+
         return
     
     # Handle backwards compatibility - if first arg doesn't start with -, parse old way

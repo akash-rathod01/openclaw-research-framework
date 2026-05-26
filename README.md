@@ -52,6 +52,61 @@
 
 ---
 
+## ✨ What's New in v1.1
+
+**Intelligent Systems** - Three new features that make OpenClaw smarter:
+
+### 🎯 Smart Source Ranking
+- **Prioritizes high-authority sources** (`.edu`, `.gov`, `github.com`, `stackoverflow.com`)
+- **Scores by relevance** - Matches content indicators to research goals
+- **Optimizes efficiency** - Skips low-value pages (ads, tracking, login forms)
+- **Domain scoring** - Weighs academic > organization > commercial
+- **Depth analysis** - Balances shallow overviews vs deep technical content
+
+### 🌳 Adaptive Planning Engine
+- **Goal-based execution** - Choose `quality`, `quantity`, `speed`, or `comprehensive`
+- **Dynamic adjustment** - Adapts plan based on progress and results
+- **Resource optimization** - Stops when goals met, adjusts depth as needed
+- **Decision trees** - Makes intelligent choices about what to scrape next
+- **Time budgeting** - Respects time constraints, prioritizes high-value work
+
+### 🧠 Reasoning Agent (Rule-Based)
+- **Smart filtering** - Automatically skips binary files, media, auth pages
+- **Quality assessment** - Evaluates content length, response time, structure
+- **Continue/Stop logic** - Decides when to go deeper or finish
+- **100% FREE** - Uses rules, not LLM APIs (stays free forever!)
+- **Transparent decisions** - Shows reasoning behind each choice
+
+**All v1.1 features work out of the box** - No configuration needed! Simply run your scraping commands and the intelligent systems activate automatically.
+
+---
+
+## 🗺️ Roadmap
+
+### v1.1 (Current) ✅
+- ✅ Smart source ranking by authority & relevance
+- ✅ Adaptive planning engine with decision trees
+- ✅ Rule-based reasoning agent for intelligent decisions
+- ✅ Backwards compatible (v1.0 features still work)
+
+### v1.2 (Planned)
+- 🔜 Multi-language support (detect and translate)
+- 🔜 Custom ranking algorithms (user-defined rules)
+- 🔜 LLM-powered reasoning (opt-in, API key required)
+- 🔜 Advanced content extraction (tables, code blocks)
+- 🔜 PDF/Document parsing
+
+### v2.0 (Future)
+- 🚀 Distributed scraping across multiple machines
+- 🚀 Real-time incremental updates
+- 🚀 Knowledge graph construction
+- 🚀 Interactive web UI for non-programmers
+- 🚀 Cloud deployment templates (AWS, Azure, GCP)
+
+**Want a feature?** Open an issue or contribute! See [CONTRIBUTING.md](CONTRIBUTING.md)
+
+---
+
 ## Why OpenClaw?
 
 
