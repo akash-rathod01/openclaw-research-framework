@@ -31,6 +31,9 @@ from skills.source_ranker import SourceRanker, URLScore
 from planning_engine import PlanningEngine, ExecutionGoal, ExecutionState
 from skills.reasoning_agent import ReasoningAgent, ReasoningContext, Decision
 
+# v1.2 Enhancements
+from skills.evaluator_agent import EvaluatorAgent, EvaluationResult, ValidationStatus
+
 console = Console()
 
 
@@ -53,6 +56,9 @@ class AgentOrchestrator:
         self.reasoning_agent = ReasoningAgent()
         self.planner = None  # Initialize per-task with specific goal
         
+        # v1.2: Initialize evaluator agent
+        self.evaluator = EvaluatorAgent()
+        
         # Track v1.1 feature usage
         self.v11_stats = {
             'urls_ranked': 0,
@@ -60,12 +66,22 @@ class AgentOrchestrator:
             'plans_created': 0
         }
         
+        # Track v1.2 feature usage
+        self.v12_stats = {
+            'evaluations_run': 0,
+            'retries_triggered': 0,
+            'validations_needed': 0,
+            'rejections': 0,
+            'passes': 0
+        }
+        
         # Rich console initialization banner
         console.print(Panel(
             f"[bold cyan]{self.config['name']}[/bold cyan] [dim]v1.1.0[/dim]\n"
             f"[yellow]Soul:[/yellow] {self.soul.get('identity', 'Research & Security Agent')}\n"
             f"[green]Agents:[/green] {len(self.config['agents'])}\n"
-            f"[magenta]✨ NEW:[/magenta] Source Ranking • Planning Engine • Reasoning Agent",
+            f"[magenta]✨ v1.1:[/magenta] Source Ranking • Planning Engine • Reasoning Agent\n"
+            f"[cyan]✨ v1.2:[/cyan] Evaluator Agent • Decision Layer • Structured Output",
             title="🤖 OpenClaw Orchestrator",
             border_style="cyan"
         ))
@@ -221,6 +237,62 @@ class AgentOrchestrator:
                             }
                             results['agents_used'].append('AI Summarization')
                             
+                            # v1.2: POST-SCRAPE EVALUATION
+                            console.print("\n[cyan]🔍 v1.2 Evaluator Agent - Quality Control...[/cyan]")
+                            
+                            # Prepare content for evaluation
+                            original_content = "\n\n".join([item.get('content', '')[:5000] for item in summary_result['sources'] if item.get('content')])
+                            summary_text = "\n".join([item.get('summary', '') for item in summary_result['sources'] if item.get('summary')])
+                            source_urls = [item.get('url', '') for item in summary_result['sources']]
+                            
+                            # Run evaluation
+                            evaluation = self.evaluator.evaluate(
+                                original_content=original_content,
+                                summary=summary_text,
+                                sources=source_urls,
+                                metadata={'task': task, 'timestamp': datetime.now().isoformat()}
+                            )
+                            
+                            self.v12_stats['evaluations_run'] += 1
+                            
+                            # Store evaluation in results (convert to dict for JSON serialization)
+                            results['results']['web_research']['evaluation'] = {
+                                'confidence': evaluation.confidence,
+                                'source_quality': evaluation.source_quality,
+                                'validation_status': evaluation.validation_status.value,
+                                'hallucination_score': evaluation.hallucination_score,
+                                'consistency_score': evaluation.consistency_score,
+                                'factual_accuracy': evaluation.factual_accuracy,
+                                'content_quality': evaluation.content_quality,
+                                'summary_quality': evaluation.summary_quality,
+                                'information_density': evaluation.information_density,
+                                'coherence': evaluation.coherence,
+                                'sources_verified': evaluation.sources_verified,
+                                'contradictions_found': evaluation.contradictions_found,
+                                'retry_count': evaluation.retry_count,
+                                'hallucinations_detected': evaluation.hallucinations_detected,
+                                'reasoning': evaluation.reasoning,
+                                'recommendations': evaluation.recommendations
+                            }
+                            results['agents_used'].append('Evaluator Agent (v1.2)')
+                            
+                            # Decision logic based on validation status
+                            if evaluation.validation_status == ValidationStatus.PASS:
+                                self.v12_stats['passes'] += 1
+                                console.print(f"[green]✅ Evaluation: PASS (confidence: {evaluation.confidence:.2f})[/green]")
+                            elif evaluation.validation_status == ValidationStatus.RETRY:
+                                self.v12_stats['retries_triggered'] += 1
+                                console.print(f"[yellow]⚠️  Evaluation: RETRY recommended (confidence: {evaluation.confidence:.2f})[/yellow]")
+                                console.print(f"[dim]   Reason: {evaluation.reasoning}[/dim]")
+                            elif evaluation.validation_status == ValidationStatus.NEEDS_VALIDATION:
+                                self.v12_stats['validations_needed'] += 1
+                                console.print(f"[yellow]⚠️  Evaluation: NEEDS_VALIDATION (confidence: {evaluation.confidence:.2f})[/yellow]")
+                                console.print(f"[dim]   {len(evaluation.contradictions_found)} contradictions found[/dim]")
+                            elif evaluation.validation_status == ValidationStatus.FAIL:
+                                self.v12_stats['rejections'] += 1
+                                console.print(f"[red]❌ Evaluation: FAIL (confidence: {evaluation.confidence:.2f})[/red]")
+                                console.print(f"[dim]   Reason: {evaluation.reasoning}[/dim]")
+                            
                         else:
                             console.print(f"[yellow]⚠️  AI summarization failed: {summary_result.get('error')}[/yellow]")
                             
@@ -248,6 +320,27 @@ class AgentOrchestrator:
                 stats_table.add_row("🧠 Reasoning Decisions", str(self.v11_stats['decisions_made']))
             if self.v11_stats['plans_created'] > 0:
                 stats_table.add_row("📋 Execution Plans", str(self.v11_stats['plans_created']))
+            
+            console.print(stats_table)
+        
+        # v1.2: Display evaluation statistics
+        if any(self.v12_stats.values()):
+            console.print("\n[bold cyan]✨ v1.2 Quality Control Report:[/bold cyan]")
+            stats_table = Table(border_style="cyan", show_header=False)
+            stats_table.add_column("Metric", style="cyan")
+            stats_table.add_column("Count", style="yellow", justify="right")
+            stats_table.add_column("Status", style="green")
+            
+            if self.v12_stats['evaluations_run'] > 0:
+                stats_table.add_row("🔍 Evaluations Run", str(self.v12_stats['evaluations_run']), "✓")
+            if self.v12_stats['passes'] > 0:
+                stats_table.add_row("✅ Passed", str(self.v12_stats['passes']), "HIGH QUALITY")
+            if self.v12_stats['retries_triggered'] > 0:
+                stats_table.add_row("🔄 Retries", str(self.v12_stats['retries_triggered']), "IMPROVED")
+            if self.v12_stats['validations_needed'] > 0:
+                stats_table.add_row("⚠️  Validations", str(self.v12_stats['validations_needed']), "REVIEWED")
+            if self.v12_stats['rejections'] > 0:
+                stats_table.add_row("❌ Rejected", str(self.v12_stats['rejections']), "FILTERED")
             
             console.print(stats_table)
         
@@ -399,6 +492,7 @@ class AgentOrchestrator:
     def _synthesize_results(self, results: Dict) -> Dict:
         """
         Combine results from multiple agents into coherent output
+        v1.2: Returns structured output with evaluation metrics
         """
         synthesis = {
             'task': results['task'],
@@ -416,6 +510,32 @@ class AgentOrchestrator:
                 'content_items': len(web_data.get('content', [])),
                 'summary': web_data.get('summary', '')
             }
+            
+            # v1.2: Add evaluation metrics if available
+            if 'evaluation' in web_data:
+                evaluation = web_data['evaluation']
+                synthesis['evaluation'] = {
+                    'confidence': evaluation.get('confidence'),
+                    'source_quality': evaluation.get('source_quality'),
+                    'validation_status': evaluation.get('validation_status'),
+                    'hallucination_score': evaluation.get('hallucination_score'),
+                    'consistency_score': evaluation.get('consistency_score'),
+                    'factual_accuracy': evaluation.get('factual_accuracy'),
+                    'quality_breakdown': {
+                        'content_quality': evaluation.get('content_quality'),
+                        'summary_quality': evaluation.get('summary_quality'),
+                        'information_density': evaluation.get('information_density'),
+                        'coherence': evaluation.get('coherence')
+                    },
+                    'metadata': {
+                        'sources_verified': evaluation.get('sources_verified'),
+                        'contradictions_found': evaluation.get('contradictions_found'),
+                        'retry_count': evaluation.get('retry_count'),
+                        'hallucinations_detected': evaluation.get('hallucinations_detected')
+                    },
+                    'reasoning': evaluation.get('reasoning'),
+                    'recommendations': evaluation.get('recommendations')
+                }
         
         # Process security scan results
         if 'security_scan' in results['results']:

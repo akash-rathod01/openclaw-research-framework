@@ -3,6 +3,53 @@ All updates, features, and bug fixes for the OpenClaw Research Framework are tra
 
 ---
 
+## [v1.2.0] - 2026-05-26
+
+### 🎯 Quality Control & Evaluation System
+
+**NEW: Evaluator Agent**
+- Post-scrape quality assessment with confidence scoring (0-1)
+- Hallucination detection (identifies fabricated claims, unsupported statements)
+- Consistency checking (compares summaries with original content)
+- Automatic validation status (PASS/FAIL/RETRY/NEEDS_VALIDATION)
+- Structured output format for enterprise use
+
+**NEW: Decision Layer**
+- Intelligent retry logic based on confidence thresholds
+- Content quality scoring (text_quality, information_density, coherence)
+- Source quality metrics (domain authority, credibility scoring)
+- Validation triggering for contradictory content
+
+**NEW: Enterprise-Ready Output**
+- Structured JSON format with confidence, source_quality, validation_status
+- Quality breakdown metrics (content_quality, summary_quality, information_density, coherence)
+- Full audit trail (sources_verified, contradictions_found, retry_count, hallucinations_detected)
+- Transparent reasoning for all evaluation decisions
+- Actionable recommendations for quality improvement
+
+**Enhanced Reporting**
+- v1.2 Quality Control section in Markdown reports
+- Interactive evaluation dashboard in HTML reports
+- Visual confidence meters and quality breakdowns
+- Real-time v1.2 stats display (evaluations_run, passes, retries, validations, rejections)
+
+**Technical Implementation**
+- skills/evaluator_agent.py (800+ lines)
+- EvaluationResult dataclass with 15+ metrics
+- ValidationStatus enum (PASS/FAIL/RETRY/NEEDS_VALIDATION)
+- HallucinationType enum for detailed error classification
+- Orchestrator integration with v1.2 stats tracking
+- Report generator updated for quality metrics display
+
+**Benefits**
+- Know which results to trust (confidence scores on every output)
+- Catch AI hallucinations before they reach users
+- Ensure consistency between source and summary
+- Enterprise compliance (full audit trail, explainable decisions)
+- Improved accuracy (automatic retry for low-confidence results)
+
+---
+
 ## [Enterprise Upgrade] - 2026-04-21
 
 - Started implementation of Step 1: Web-based User Authentication & Role Management
